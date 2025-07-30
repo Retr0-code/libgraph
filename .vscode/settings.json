@@ -37,6 +37,12 @@
         "text_encoding": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "ranges": "cpp",
+        "memory": "cpp",
+        "functional": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "print": "cpp"
     }
 }
