@@ -43,6 +43,8 @@
         "functional": "cpp",
         "deque": "cpp",
         "list": "cpp",
-        "print": "cpp"
+        "print": "cpp",
+        "unordered_set": "cpp",
+        "variant": "cpp"
     }
 }

@@ -7,11 +7,11 @@
 #include "Accumulators.hpp"
 
 template <class T>
-class GraphDFS : public IGraph<T> {
+class GraphDFS : public IGraphWeighted<T> {
 public:
     using VertexId = uint32_t;
 
-    virtual IGraph<T>& EdgeAdd(VertexId from, VertexId to, const T& weight, bool bidirectional = false);
+    virtual IGraphWeighted<T>& EdgeAdd(VertexId from, VertexId to, const T& weight, bool bidirectional = false);
 
     virtual Path<T> Traverse(
         VertexId from,
@@ -36,7 +36,7 @@ private:
 };
 
 template <class T>
-IGraph<T>& GraphDFS<T>::EdgeAdd(VertexId from, VertexId to, const T &weight, bool bidirectional) {
+IGraphWeighted<T>& GraphDFS<T>::EdgeAdd(VertexId from, VertexId to, const T &weight, bool bidirectional) {
     this->_graph[from].adjacent.emplace(to, weight);
 
     if (bidirectional)

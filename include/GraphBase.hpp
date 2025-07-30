@@ -78,15 +78,25 @@ private:
 /**
  * @brief Interface class for different graph representations.
  * 
- * @tparam T - weight type for non-weighted graph it is common to use boolean value or just delete this interface function.
+ * @tparam T - weight type for non-weighted graph it is common to use integer value=1.
  */
 template <class T>
 class IGraph {
 public:
-    virtual IGraph<T>& EdgeAdd(VertexId from, VertexId to, const T& weight, bool bidirectional) = 0;
-
     virtual Path<T> Traverse(
         VertexId from,
         VertexId to,
         const AccumulatorPtr<T>& accumulator) = 0;
+};
+
+template <class T>
+class IGraphUnweighted : public IGraph<T> {
+public:
+    virtual IGraphUnweighted<T>& EdgeAdd(VertexId from, VertexId to, bool bidirectional) = 0;
+};
+
+template <class T>
+class IGraphWeighted : public IGraph<T> {
+public:
+    virtual IGraphWeighted<T>& EdgeAdd(VertexId from, VertexId to, const T& weight, bool bidirectional) = 0;
 };
