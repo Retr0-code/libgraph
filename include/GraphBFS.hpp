@@ -2,6 +2,10 @@
 #include "GraphBase.hpp"
 #include "Accumulators.hpp"
 
+#include <queue>
+#include <unordered_map>
+#include <unordered_set>
+
 template <class T>
 class GraphBFS : public IGraphUnweighted<T> {
 public:
@@ -15,29 +19,17 @@ public:
         const AccumulatorPtr<T> & accumulator);
 
 private:
-    private:
-    struct Vertex {
-        // VertexId is adjacent vertex and T is a weight type
-        using Edge = std::pair<VertexId, T>;
-        
-        struct HashEdge {
-            std::size_t operator()(const Edge& edge) const noexcept {
-                return std::hash<VertexId>{}(edge.first);
-            }
-        };
-
-        std::unordered_set<Edge, HashEdge> adjacent;
-    };
+    using Vertex = std::unordered_set<VertexId>;
 
     std::unordered_map<VertexId, Vertex> _graph;
 };
 
 template <class T>
 IGraphUnweighted<T>& GraphBFS<T>::EdgeAdd(VertexId from, VertexId to, bool bidirectional) {
-    this->_graph[from].adjacent.emplace(to, weight);
+    this->_graph[from].emplace(to);
 
     if (bidirectional)
-        this->_graph[to].adjacent.emplace(from, weight);
+        this->_graph[to].emplace(from);
 
     return *this;
 }
@@ -46,36 +38,37 @@ template <class T>
 Path<T> GraphBFS<T>::Traverse(VertexId from, VertexId to, const AccumulatorPtr<T> &accumulator) {
     Path<T> shortestPath;
     std::unordered_map<VertexId, bool> visited;
-    History<T> history;
-    bool firstEntry{true};
+    std::unordered_map<VertexId, VertexId> parent;
+    std::queue<VertexId> queueLayer;
 
-    history.push_back(VertexStatus{from, accumulator->Get()});
-    while (!history.empty()) {
-        auto [root, accumulated] = history.back();
+    queueLayer.push(from);
+    parent[from] = from;
+    while (!queueLayer.empty()) {
+        VertexId root = queueLayer.front();
+        queueLayer.pop();
 
-        // To prevent loops
+        if (to == root) {
+            History<T> history;
+            for (VertexId v = to; v != from; v = parent[v])
+                history.push_front(VertexStatus{v, 0});
+            
+            history.push_front(VertexStatus{from, 0});
+                
+            shortestPath = history;
+            break;
+        }
+
         if (!visited[root])
             visited[root] = true;
 
-        bool end = true;
-        for (auto [vertex, weight] : this->_graph[root].adjacent) {
+        for (VertexId vertex : this->_graph[root]) {
             if (visited[vertex])
                 continue;
 
-            history.push_back(VertexStatus{vertex, (*accumulator)(accumulated, weight)});
-            end = false;
-            break;
+            visited[vertex] = true;
+            queueLayer.push(vertex);
+            parent[vertex] = root;
         }
-        
-        if (to == root) {
-            if (firstEntry || accumulated < shortestPath.Accumulated()) {
-                shortestPath = history;
-                firstEntry = false;
-            }
-        }
-
-        if (end)
-            history.pop_back();
     }
     return shortestPath;
 }

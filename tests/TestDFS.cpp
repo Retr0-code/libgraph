@@ -5,6 +5,13 @@
 
 int main() {
     GraphDFS<float> graph;
+    /*
+       1--2
+      /    \
+    0<      4
+      \    /
+       3--/
+     */
     graph.EdgeAdd(0, 1, 2.5f, true)
          .EdgeAdd(1, 2, 3.7f, false)
          .EdgeAdd(0, 3, 1.2f, true)

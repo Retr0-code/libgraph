@@ -20,4 +20,7 @@ set(DIR_TESTS "tests")
 add_executable(TestDFS ${DIR_TESTS}/TestDFS.cpp)
 target_include_directories(TestDFS PUBLIC ${DIR_INCLUDE})
 
+add_executable(TestBFS ${DIR_TESTS}/TestBFS.cpp)
+target_include_directories(TestBFS PUBLIC ${DIR_INCLUDE})
+
 # target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
