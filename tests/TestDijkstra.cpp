@@ -1,10 +1,11 @@
 #include <print>
 #include <memory>
 #include <iostream>
-#include "GraphBFS.hpp"
+#include "Accumulators.hpp"
+#include "GraphDijkstra.hpp"
 
 int main() {
-    GraphBFS<int> graph;
+    GraphDijkstra<int> graph;
     /*
        1--2
       /    \
@@ -12,11 +13,11 @@ int main() {
       \    /
        3--/
      */
-    graph.EdgeAdd(0, 1, true)
-         .EdgeAdd(1, 2, false)
-         .EdgeAdd(0, 3, true)
-         .EdgeAdd(2, 4, false)
-         .EdgeAdd(3, 4, true);
+    graph.EdgeAdd(0, 1, 25, true)
+         .EdgeAdd(1, 2, 37, false)
+         .EdgeAdd(0, 3, 12, true)
+         .EdgeAdd(2, 4, 46, false)
+         .EdgeAdd(3, 4, 20, true);
 
     AccumulatorPtr<int> acc{reinterpret_cast<IAccumulator<int>*>(new AccumulatorSum<int>(0))};
     Path<int> shortest{graph.Traverse(0, 4, acc)};
